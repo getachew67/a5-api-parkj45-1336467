@@ -1,4 +1,3 @@
-# Put the files you don't want to upload to git here
-# in particular, the keys.R file should be listed here.
-# you may also add .pdf-s, editor backup files, RStudio project files, etc
-
+# file that stores api keys for the assignment, both from
+# google civic platform and Propublica.
+*keys.R

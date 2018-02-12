@@ -5,19 +5,17 @@ output:
 css: styles.css
 ---
 
-This is the stub of the .rmd file you should use to create you
-representatives' overview.  Please fill in the missing part, write the
-code, and delete the instructions.
 
-
-# Your Elected Officials
 
 
 ```{r init, include=FALSE}
-## load API keys
 source("keys.R")
 ## you may also load necessary libraries and set various options here
 library(dplyr)
+library(httr)
+library(jsonlite)
+library(stringr)
+library(knitr)
 knitr::opts_chunk$set(error=TRUE)
                            # continue compiling on error
 ```
@@ -25,10 +23,10 @@ knitr::opts_chunk$set(error=TRUE)
 ```{r address, include=FALSE}
 ## insert your address here.  It does not to have quite complete.
 ## Test your code with addresses in different states, see if it works
-address <- "San Francisco, CA"
+address <- "4535 12th Ave NE, Seattlem WA, 98105"
 ```
 
-```{r processData}
+```{r processData, include=FALSE}
 ## Make the main computations here.  Keep the functions in a separate file(s)
 ## and only include the final operations here.
 ## You have to 'source()' your main R file(s) here:
@@ -38,30 +36,38 @@ source('process_data.R')
 
 ## Your Representatives
 
-Explain briefly what and how do you do here.  Provide links to the
-corresponding API-s.
+This is a report about the political representatives for residents of *Seattle*, **WA**. All the data was extracted 
+from [Propublica API]("https://projects.propublica.org/api-docs/congress-api/members/#members"), and [Google Civic Platform]("https://developers.google.com/civic-information/docs/v2/representatives"). Below is the brief table for the political representatives for the 
+given address.
 
-Include a table that includes all the officials for the given addres.  
 
-```{r}
+```{r table, echo=FALSE}
 ## You may want to print the table in a nice way using `knitr::kable()`
 ## when you have already created it.
-knitr::kable(repTable)
+knitr::kable(final.table)
 ```
 
 ## House of Representatives
 
-Make the visualization of party affiliation of the the congressional representatives
-(in the House of Representatives, _not_ the Senate) for this address.
-
-```{r}
+```{r graph, echo=FALSE}
 ##
-## ggplot(stateReps, aes(gender)) + ...
+ggplot(data = representatives) +
+  geom_bar(mapping = aes(x = representatives$party, fill = party)) +
+  ggtitle("Party Affiliation of the Representatives") +
+  labs(x = "party", y = "# of Representatives") +
+  scale_fill_manual(values = c("red", "blue")) +
+  coord_flip()
+
+ggplot(data = representatives) +
+  geom_bar(mapping = aes(x = representatives$gender, fill = gender)) +
+  ggtitle("Gender Distribution of the Representatives") +
+  labs(x = "gender", y = "# of Representatives") +
+  coord_flip()
 ```
 
-Make another visualization too.
 
-## Pick a Particular Representative.  Insert the name here in the title
+## **`r name`**
 
-Write a paragraph where you tell her name, party, age, and twitter
-link.  Find out how often she recently voted with the majority.
+Here is a more in-depth information about a specific representative, *`r name`*. The representative is a **`r rep.party`**, `r age` years old, and you can find their twitter on [`r twitter`](paste("www.twitter.com/", twitter)). Fun fact, of the last 20 congressional votes, the representative was in accordance with the majority `r votes.percentage` of the time.
+
+
